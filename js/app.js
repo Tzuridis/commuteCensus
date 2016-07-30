@@ -1,4 +1,4 @@
-var input;
+
 $(function() {
 
     var sdk = new CitySDK();
@@ -9,12 +9,10 @@ $(function() {
         function(event) {
             event.preventDeafult();
             var searchTerm = $('#inputBox').val();
-            input = searchTerm;
-        })
 
-    var request = {
+            var request = {
         "level": "state",
-        "state": input,
+        "state": searchTerm,
         "variables": [
             "commute_time"
         ],
@@ -27,5 +25,8 @@ $(function() {
         $(".results").append(JSON.stringify(response));
 
     });
+        })
+
+    
 
 })
