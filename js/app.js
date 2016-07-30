@@ -1,28 +1,31 @@
+var input;
 $(function() {
 
     var sdk = new CitySDK();
-    var censusModule = sdk.modules.census;
+    var census = sdk.modules.census;
+    census.enable("5b127cd94e9fa8f7cbf337aa376f4d0be96d5375");
 
-    censusModule.enable("5b127cd94e9fa8f7cbf337aa376f4d0be96d5375");
+    $('#userInput').submit(
+        function(event) {
+            event.preventDeafult();
+            var searchTerm = $('#inputBox').val();
+            input = searchTerm;
+        })
 
-    $('#userInput').submit(function(event) {
-        event.preventDeafult();
-        var searchTerm = $('#inputBox').val();
-        getRequest(searchTerm);
-    });
-});
-
-function getRequest(searchTerm) {
-    var params = {
-
+    var request = {
+        "level": "state",
+        "state": input,
+        "variables": [
+            "commute_time"
+        ],
+        "api": "acs5",
+        "year": "2013"
     };
-    url = ''
 
-    $.getJSON(url, params, function(data) {
-        showResults(data)
+    census.APIRequest(request, function(response) {
+
+        $(".results").append(JSON.stringify(response));
+
     });
-}
 
-function showResults(results) {
-    console.log(results)
-}
+})
