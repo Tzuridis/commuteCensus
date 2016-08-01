@@ -1,5 +1,4 @@
 var map;
-
 var states = {
     'Alabama': "AL",
     'Alaska': "AK",
@@ -105,7 +104,6 @@ var states = {
     'WY': "WY"
 }
 
-
 $(function() {
 
 
@@ -113,20 +111,6 @@ $(function() {
     var census = sdk.modules.census;
     census.enable("5b127cd94e9fa8f7cbf337aa376f4d0be96d5375");
 
-    function initialize() {
-        var mapOptions = {
-            center: {
-                lat: 38.91732,
-                lng: -77.2211
-            },
-            zoom: 10
-        };
-        map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-        map.data.setStyle({
-            fillColor: 'green'
-        });
-    };
 
     $('#userInput').submit(
         function(event) {
@@ -137,7 +121,10 @@ $(function() {
                 "level": "state",
                 "state": states[searchTerm],
                 "variables": [
-                    "commute_time"
+                    "commute_time",
+                    "population",
+                    "income"
+
                 ],
                 "api": "acs1",
                 "year": "2013"
@@ -146,45 +133,30 @@ $(function() {
             console.log(request)
 
 
-            $.ajax({
-
-                type: 'GET',
-
-                url: 'http://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/tigerWMS_Current/MapServer/84/query',
-
-                contentType: 'text/plain',
-
-                xhrFields: {
-                },
-
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE'
-                },
-
-                success: function() {
-                    console.log(Yes)
-                },
-
-                error: function() {
-                    console.log(No)
-                }
-            });
-
-
 
             census.APIRequest(request, function(response) {
-                $(".results").append(JSON.stringify("<p>" + 'Average Commute Time:' + "</p>" + response.data[0].commute_time_normalized + " " + 'minutes.'));
+                $(".results").html("</p>" +  " " + 
+                    "<p>" + 'Population:' + "</p>" + response.data[0].population + "</p>" +  " " + 
+                    "</p>" +  " " + 
+                    "<p>" + 'Average Income:' + "</p>" + response.data[0].income + "</p>" +  " " +  
+                    "<p>" + 'Average Commute Time:' + "</p>" + response.data[0].commute_time_normalized + " " + 'minutes.')
+
+                console.log(response.lat)
+
+                console.log(response.lng)
+
+                function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: response.lat, lng: response.lng},
+          zoom: 8
+        });
+      }
+      initMap();
+      
             });
 
 
-            census.GEORequest(request, function(response) {
 
-                map.data.addGeoJson(response);
-
-                console.log(response)
-
-            });
 
 
         });
