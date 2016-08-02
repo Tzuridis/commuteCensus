@@ -106,11 +106,9 @@ var states = {
 
 $(function() {
 
-
     var sdk = new CitySDK();
     var census = sdk.modules.census;
     census.enable("5b127cd94e9fa8f7cbf337aa376f4d0be96d5375");
-
 
     $('#userInput').submit(
         function(event) {
@@ -132,13 +130,11 @@ $(function() {
 
             console.log(request)
 
-
-
             census.APIRequest(request, function(response) {
-                $(".results").html("</p>" +  " " + 
-                    "<p>" + 'Population:' + "</p>" + response.data[0].population + "</p>" +  " " + 
-                    "</p>" +  " " + 
-                    "<p>" + 'Average Income:' + "</p>" + response.data[0].income + "</p>" +  " " +  
+                $(".results").html("</p>" + " " +
+                    "<p>" + 'Population:' + "</p>" + response.data[0].population + "</p>" + " " +
+                    "</p>" + " " +
+                    "<p>" + 'Average Income:' + "</p>" + response.data[0].income + "</p>" + " " +
                     "<p>" + 'Average Commute Time:' + "</p>" + response.data[0].commute_time_normalized + " " + 'minutes.')
 
                 console.log(response.lat)
@@ -146,18 +142,22 @@ $(function() {
                 console.log(response.lng)
 
                 function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: response.lat, lng: response.lng},
-          zoom: 8
-        });
-      }
-      initMap();
-      
+                    map = new google.maps.Map(document.getElementById('map'), {
+                        center: {
+                            lat: response.lat,
+                            lng: response.lng
+                        },
+                        zoom: 8
+                    });
+                    map.data.setStyle({
+                        fillColor: 'blue'
+                    });
+                }
+                initMap();
+
+
+      })
+
             });
 
-
-
-
-
         });
-});
